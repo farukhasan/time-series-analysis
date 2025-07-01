@@ -12,7 +12,7 @@ required_packages <- c(
   "forecast", "TSstudio", "tseries", "urca", "vars", "prophet",
   "tidyverse", "lubridate", "plotly", "ggplot2", "gridExtra", "corrplot",
   "bcputility", "changepoint", "MTS", "tsDyn", "MARSS",
-  "randomForest", "xgboost", "caret", "e1071", "glmnet",
+  "randomForest",  "caret", "e1071", "glmnet","xgboost",
   "car", "nortest", "moments", "fracdiff",
   "fable", "feasts", "tsibble", "fabletools", "modeltime", "timetk",
   "knitr", "kableExtra", "scales", "RColorBrewer","MSwM"
@@ -340,7 +340,7 @@ plot(prophet_model, prophet_forecast) +
 prophet_plot_components(prophet_model, prophet_forecast)
 
 # =============================================================================
-# 11. XGBoost
+# 11. Feature Engineering
 # =============================================================================
 
 create_features <- function(ts_data, lags = 12) {
@@ -393,6 +393,27 @@ xgb.plot.importance(importance_matrix[1:10, ])
 
 svr_model <- svm(y ~ ., data = ml_train, kernel = "radial", cost = 1, gamma = 0.1)
 svr_pred <- predict(svr_model, ml_test)
+
+
+svr_results <- data.frame(
+  Date = data_raw$Date[(nrow(data_raw) - nrow(ml_test) + 1):nrow(data_raw)],
+  Actual = ml_test$y,
+  Predicted = svr_pred
+)
+
+ggplot(svr_results, aes(x = as.Date(Date))) +
+  geom_line(aes(y = Actual, color = "Actual"), size = 1) +
+  geom_line(aes(y = Predicted, color = "Predicted"), size = 1, linetype = "dashed") +
+  labs(
+    title = "SVR Forecast vs Actual",
+    x = "Date",
+    y = "Electricity Generation (MWh)",
+    color = "Legend"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("Actual" = "steelblue", "Predicted" = "tomato")) +
+  theme(plot.title = element_text(hjust = 0.5))
+
 
 # =============================================================================
 # 12. MODEL EVALUATION AND COMPARISON

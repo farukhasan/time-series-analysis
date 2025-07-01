@@ -335,7 +335,7 @@ plot(prophet_model, prophet_forecast) +
 prophet_plot_components(prophet_model, prophet_forecast)
 
 # =============================================================================
-# 11. MACHINE LEARNING MODELS
+# 11. XGBoost
 # =============================================================================
 
 create_features <- function(ts_data, lags = 12) {
@@ -447,7 +447,7 @@ ggplot(forecast_long, aes(x = Date, y = Value, color = Model, linetype = Type)) 
   theme(legend.position = "bottom")
 
 # =============================================================================
-# 13. BUSINESS INSIGHTS AND RECOMMENDATIONS
+# 13. INSIGHTS AND RECOMMENDATIONS
 # =============================================================================
 
 seasonal_analysis <- data_ts %>%
@@ -619,7 +619,7 @@ dominant_freqs <- which(spectrum_analysis$spec == max(spectrum_analysis$spec))
 dominant_periods <- 1 / spectrum_analysis$freq[dominant_freqs]
 
 # =============================================================================
-# 16. BUSINESS RECOMMENDATIONS AND INSIGHTS
+# 16. RECOMMENDATIONS AND INSIGHTS
 # =============================================================================
 
 key_findings <- list(

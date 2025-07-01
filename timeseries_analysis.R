@@ -15,7 +15,7 @@ required_packages <- c(
   "randomForest", "xgboost", "caret", "e1071", "glmnet",
   "car", "nortest", "moments", "fracdiff",
   "fable", "feasts", "tsibble", "fabletools", "modeltime", "timetk",
-  "knitr", "kableExtra", "scales", "RColorBrewer"
+  "knitr", "kableExtra", "scales", "RColorBrewer","MSwM"
 )
 
 install_if_missing <- function(pkg) {
@@ -56,10 +56,10 @@ names(data_raw) <- clean_names
 
 data_raw$Date <- as.Date(paste0(data_raw$Date, "-01"), format = "%Y-%m-%d")
 
-missing_summary <- data_raw %>%
-  summarise_all(~sum(is.na(.))) %>%
-  gather(key = "Variable", value = "Missing_Count") %>%
-  mutate(Missing_Percentage = round(Missing_Count / nrow(data_raw) * 100, 2)) %>%
+missing_summary <- data_raw |>
+  summarise_all(~sum(is.na(.))) |>
+  gather(key = "Variable", value = "Missing_Count") |>
+  mutate(Missing_Percentage = round(Missing_Count / nrow(data_raw) * 100, 2)) |>
   arrange(desc(Missing_Count))
 
 numeric_cols <- names(data_raw)[sapply(data_raw, is.numeric)]
@@ -69,8 +69,8 @@ for(col in numeric_cols) {
   }
 }
 
-data_clean <- data_raw %>% 
-  filter(!is.na(Date)) %>%
+data_clean <- data_raw |> 
+  filter(!is.na(Date)) |>
   arrange(Date)
 
 data_ts <- data_clean
@@ -79,9 +79,9 @@ data_ts <- data_clean
 # 4. EXPLORATORY DATA ANALYSIS (EDA)
 # =============================================================================
 
-p1 <- data_ts %>%
-  select(-Date) %>%
-  ts(start = c(year(min(data_ts$Date)), month(min(data_ts$Date))), frequency = 12) %>%
+p1 <- data_ts |>
+  select(-Date) |>
+  ts(start = c(year(min(data_ts$Date)), month(min(data_ts$Date))), frequency = 12) |>
   ts_plot(title = "Electricity Generation by Source (All Fuels)",
           Ytitle = "Generation (MWh)",
           Xtitle = "Time")
@@ -89,13 +89,16 @@ p1 <- data_ts %>%
 fuel_sources <- c("Coal", "Natural_Gas", "Nuclear", "Conventional_Hydro", "Other_Renewables")
 
 plots_list <- list()
-for(i in 1:length(fuel_sources)) {
+for (i in seq_along(fuel_sources)) {
   fuel <- fuel_sources[i]
-  p <- ggplot(data_ts, aes_string(x = "Date", y = fuel)) +
-    geom_line(color = "steelblue", size = 0.8) +
+  p <- ggplot(data_ts, aes(x = Date, y = !!sym(fuel))) +
+    geom_line(color = "steelblue", linewidth = 0.8) +
     geom_smooth(method = "loess", se = TRUE, alpha = 0.3) +
-    labs(title = paste("Time Series:", fuel),
-         x = "Date", y = "Generation (MWh)") +
+    labs(
+      title = paste("Time Series:", fuel),
+      x = "Date",
+      y = "Generation (MWh)"
+    ) +
     theme_minimal() +
     theme(plot.title = element_text(size = 12, hjust = 0.5))
   
@@ -127,7 +130,7 @@ autoplot(decomp_classical) +
   ggtitle("Classical Decomposition - All Fuels Generation") +
   theme_minimal()
 
-data_ts_analysis <- data_ts %>%
+data_ts_analysis <- data_ts  |> 
   mutate(
     Year = year(Date),
     Month = month(Date, label = TRUE),
@@ -149,6 +152,8 @@ p_yearly <- ggplot(data_ts_analysis, aes(x = Year, y = All_Fuels)) +
   theme_minimal()
 
 grid.arrange(p_monthly, p_yearly, ncol = 1)
+
+
 
 # =============================================================================
 # 5. STATIONARITY TESTS
@@ -268,8 +273,8 @@ sts_model <- StructTS(ts_train, type = "BSM")
 # 9. MULTIVARIATE TIME SERIES ANALYSIS (VAR)
 # =============================================================================
 
-var_data <- data_ts %>%
-  select(All_Fuels, Coal, Natural_Gas, Nuclear, Other_Renewables) %>%
+var_data <- data_ts |>
+  select(All_Fuels, Coal, Natural_Gas, Nuclear, Other_Renewables) |>
   as.matrix()
 
 var_ts <- ts(var_data, 
@@ -311,8 +316,8 @@ plot(irf_results)
 # 10. PROPHET MODEL
 # =============================================================================
 
-prophet_data <- data_ts %>%
-  select(Date, All_Fuels) %>%
+prophet_data <- data_ts |>
+  select(Date, All_Fuels) |>
   rename(ds = Date, y = All_Fuels)
 
 prophet_train_end <- floor(0.8 * nrow(prophet_data))
@@ -433,8 +438,8 @@ forecast_comparison <- data.frame(
   Prophet = prophet_pred
 )
 
-forecast_long <- forecast_comparison %>%
-  gather(key = "Model", value = "Value", -Date) %>%
+forecast_long <- forecast_comparison |>
+  gather(key = "Model", value = "Value", -Date) |>
   mutate(Type = ifelse(Model == "Actual", "Actual", "Forecast"))
 
 ggplot(forecast_long, aes(x = Date, y = Value, color = Model, linetype = Type)) +
@@ -450,7 +455,7 @@ ggplot(forecast_long, aes(x = Date, y = Value, color = Model, linetype = Type)) 
 # 13. INSIGHTS AND RECOMMENDATIONS
 # =============================================================================
 
-seasonal_analysis <- data_ts %>%
+seasonal_analysis <- data_ts |>
   mutate(
     Month = month(Date, label = TRUE),
     Year = year(Date),
@@ -460,8 +465,8 @@ seasonal_analysis <- data_ts %>%
       month(Date) %in% c(6, 7, 8) ~ "Summer",
       month(Date) %in% c(9, 10, 11) ~ "Fall"
     )
-  ) %>%
-  group_by(Season) %>%
+  ) |>
+  group_by(Season) |>
   summarise(
     Avg_Total = mean(All_Fuels, na.rm = TRUE),
     Avg_Coal = mean(Coal, na.rm = TRUE),
@@ -471,9 +476,9 @@ seasonal_analysis <- data_ts %>%
     .groups = 'drop'
   )
 
-yearly_trends <- data_ts %>%
-  mutate(Year = year(Date)) %>%
-  group_by(Year) %>%
+yearly_trends <- data_ts |>
+  mutate(Year = year(Date)) |>
+  group_by(Year) |>
   summarise(
     Total_Generation = sum(All_Fuels, na.rm = TRUE),
     Coal_Share = sum(Coal, na.rm = TRUE) / sum(All_Fuels, na.rm = TRUE) * 100,
@@ -483,24 +488,24 @@ yearly_trends <- data_ts %>%
     .groups = 'drop'
   )
 
-peak_analysis <- data_ts %>%
+peak_analysis <- data_ts |>
   mutate(
     Month = month(Date, label = TRUE),
     Year = year(Date)
-  ) %>%
-  arrange(desc(All_Fuels)) %>%
+  ) |>
+  arrange(desc(All_Fuels)) |>
   head(10)
 
-volatility_analysis <- data_ts %>%
-  select(-Date) %>%
+volatility_analysis <- data_ts |>
+  select(-Date) |>
   summarise_all(list(
     Mean = ~mean(., na.rm = TRUE),
     SD = ~sd(., na.rm = TRUE),
     CV = ~sd(., na.rm = TRUE) / mean(., na.rm = TRUE) * 100
-  )) %>%
-  gather(key = "Metric", value = "Value") %>%
-  separate(Metric, into = c("Source", "Statistic"), sep = "_(?=[^_]*$)") %>%
-  spread(Statistic, Value) %>%
+  )) |>
+  gather(key = "Metric", value = "Value") |>
+  separate(Metric, into = c("Source", "Statistic"), sep = "_(?=[^_]*$)") |>
+  spread(Statistic, Value) |>
   arrange(desc(CV))
 
 # =============================================================================
@@ -568,16 +573,16 @@ electricity_forecast <- function(data, horizon = 12, model_type = "ensemble") {
 
 future_forecast <- electricity_forecast(data_ts, horizon = 12, model_type = "ensemble")
 
-historical_recent <- data_ts %>%
-  tail(24) %>%
+historical_recent <- data_ts |>
+  tail(24) |>
   mutate(Type = "Historical", Forecast = All_Fuels, Model = "Actual")
 
-forecast_viz <- future_forecast %>%
-  mutate(Type = "Forecast", All_Fuels = Forecast) %>%
+forecast_viz <- future_forecast |>
+  mutate(Type = "Forecast", All_Fuels = Forecast) |>
   select(Date, All_Fuels, Type, Model)
 
 combined_viz <- bind_rows(
-  historical_recent %>% select(Date, All_Fuels, Type, Model),
+  historical_recent |> select(Date, All_Fuels, Type, Model),
   forecast_viz
 )
 
@@ -607,7 +612,7 @@ cpt_meanvar <- cpt.meanvar(ts_all_fuels, method = "PELT")
 plot(cpt_meanvar, main = "Change Point Detection - All Fuels Generation")
 
 ts_diff <- diff(ts_all_fuels)
-ms_model <- msmFit(lm(ts_diff ~ 1), k = 2, sw = c(TRUE, TRUE))
+ms_model <- MSwM::msmFit(lm(ts_diff ~ 1), k = 2, sw = c(TRUE, TRUE))
 
 plotProb(ms_model, which = 1)
 plotProb(ms_model, which = 2)

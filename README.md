@@ -50,7 +50,7 @@ Understanding relationships between different energy sources is essential for co
 
 ![Correlation Matrix](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Correlation_matrix.png?raw=true)
 
-The correlation analysis reveals interesting relationships between energy sources. Natural gas and coal show negative correlation, reflecting the substitution effect as natural gas has increasingly replaced coal in the energy mix. Nuclear power shows relatively low correlation with other sources, reflecting its role as a baseload generation source. Renewable sources show varying correlation patterns, indicating their growing but still variable contribution to the energy mix.
+The correlation analysis reveals complex relationships between different electricity generation sources. The heatmap shows that Pumped Storage has strong positive correlations with several sources, indicating its role in grid balancing. Natural Gas shows moderate correlations with other sources, reflecting its flexible generation capabilities. Coal and Other Renewables display notable negative correlations with some sources, suggesting substitution effects in the energy mix. Nuclear power exhibits relatively moderate correlations, consistent with its baseload generation role. The matrix reveals the interconnected nature of the electricity generation portfolio and how different sources complement or substitute for each other.
 
 ### Autocorrelation Analysis
 
@@ -74,7 +74,7 @@ Regime switching models capture different market conditions and operational stat
 
 ![Regime 1 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_1.png?raw=true)
 
-The first regime represents periods of normal generation patterns, typically characterized by stable growth and predictable seasonal variations. This regime dominates most of the analysis period, reflecting the generally stable nature of electricity demand and supply.
+The first regime analysis shows the probability distribution and time series behavior during normal operational periods. The chart displays the differenced time series (ts_diff) overlaid with smooth probabilities, where the gray shaded areas indicate periods when Regime 1 is active. The bottom panel shows the regime probabilities as vertical bars. This regime appears to dominate most of the time series, representing periods of stable electricity generation patterns with typical seasonal variations and manageable volatility levels.
 
 ![Regime 2 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_2.png?raw=true)
 

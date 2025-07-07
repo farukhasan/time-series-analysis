@@ -10,7 +10,7 @@ The dataset contains 292 monthly observations covering 11 different energy sourc
 
 ### Initial Data Exploration
 
-The analysis begins with extensive exploratory data analysis to understand the underlying patterns in electricity generation. The time series exhibits strong seasonal patterns with peak demand typically occurring during summer and winter months due to increased cooling and heating needs.
+The analysis begins with exploratory data analysis to understand the underlying patterns in electricity generation. The time series exhibits strong seasonal patterns with peak demand typically occurring during summer and winter months due to increased cooling and heating needs.
 
 ![Trend Analysis](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Trend.png?raw=true)
 
@@ -26,7 +26,7 @@ The seasonal analysis shows predictable patterns with higher generation during s
 
 ### Time Series Decomposition
 
-Decomposition analysis separates the time series into trend, seasonal, and residual components, providing insight into the underlying structure of electricity generation patterns.
+Decomposition analysis separates the time series into trend, seasonal and residual components, providing insight into the underlying structure of electricity generation patterns.
 
 ![STL Decomposition](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Decomposition_STL_1.png?raw=true)
 
@@ -50,7 +50,7 @@ Understanding relationships between different energy sources is essential for co
 
 ![Correlation Matrix](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Correlation_matrix.png?raw=true)
 
-The correlation analysis reveals interesting relationships between energy sources. Natural gas and coal show negative correlation, reflecting the substitution effect as natural gas has increasingly replaced coal in the energy mix. Nuclear power shows relatively low correlation with other sources, reflecting its role as a baseload generation source. Renewable sources show varying correlation patterns, indicating their growing but still variable contribution to the energy mix.
+The correlation analysis reveals complex relationships between different electricity generation sources. The heatmap indicates that Pumped Storage has a strong negative correlation (around -0.8) with Conventional Hydro, suggesting an opposing role in energy management. Natural Gas exhibits a strong positive correlation (around 0.8) with Coal, reflecting a close relationship possibly tied to market dynamics. Coal and Other Renewables show mixed correlations, with Coal aligning positively with Natural Gas and Other Renewables having moderate positive ties (e.g., ~0.6 with Petroleum Liquids), while substitution effects appear limited. Nuclear power displays moderate correlations (around 0.2 to 0.4), consistent with its stable baseload generation role.
 
 ### Autocorrelation Analysis
 
@@ -58,7 +58,12 @@ Autocorrelation analysis helps identify the appropriate model structure for time
 
 ![ACF and PACF Analysis](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/ACF_PACF.png?raw=true)
 
-The autocorrelation function (ACF) and partial autocorrelation function (PACF) plots reveal the temporal dependencies in the data. The ACF shows strong seasonal patterns with significant correlations at 12-month lags, while the PACF helps determine the appropriate order for autoregressive models. These patterns inform the selection of ARIMA model parameters.
+The provided plots display Autocorrelation Function (ACF) and Partial Autocorrelation Function (PACF) for electricity generation data across all fuels, both in their original form and after differencing.
+
+ACF - All Fuels: The ACF plot shows autocorrelation coefficients close to zero for all lags (up to 3), with values fluctuating slightly   around the confidence interval (blue dashed lines). This suggests little to no significant autocorrelation in the original data, indicating it may not be stationary.
+PACF - All Fuels: The PACF plot also shows coefficients near zero for most lags, except for a potential significant spike at lag 1. This could imply a slight direct relationship with the immediate past value, but overall autocorrelation appears weak.
+ACF - Differenced All Fuels: After differencing, the ACF plot shows coefficients remaining close to zero across all lags, with no significant spikes beyond the confidence interval. This indicates that differencing has helped remove any trend or autocorrelation, suggesting the data is now stationary.
+PACF - Differenced All Fuels: The PACF plot for differenced data shows a significant spike at lag 1, with subsequent lags close to zero. This suggests that the differenced series may follow an AR(1) process, where only the first lag has a notable influence.
 
 ### Change Point Detection
 
@@ -66,7 +71,7 @@ Identifying structural changes in the time series helps understand major shifts 
 
 ![Change Point Analysis](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Change_point_detction.png?raw=true)
 
-Change point analysis identifies several significant structural breaks in the electricity generation time series. These breakpoints often correspond to major policy changes, economic events, or technological shifts in the energy sector. The analysis reveals multiple regime changes, particularly around 2008-2009 (corresponding to the financial crisis) and 2012-2014 (reflecting the shale gas revolution).
+The change point detection plot for all fuels generation from 2000 to 2025 shows the total electricity generation (in MW) fluctuating around a mean level of approximately 35,000 MW, indicated by the red horizontal line. The data exhibits significant variability, with peaks reaching above 40,000 MW and dips below 30,000 MW, suggesting seasonal or operational influences. No clear structural breaks or abrupt shifts in the mean level are evident across the observed period, implying a relatively stable overall trend despite the fluctuations. This stability, combined with the consistent mean, indicates that while short-term variations occur, there are no major long-term changes in the generation pattern up to July 2025.
 
 ### Regime Switching Analysis
 
@@ -74,11 +79,11 @@ Regime switching models capture different market conditions and operational stat
 
 ![Regime 1 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_1.png?raw=true)
 
-The first regime represents periods of normal generation patterns, typically characterized by stable growth and predictable seasonal variations. This regime dominates most of the analysis period, reflecting the generally stable nature of electricity demand and supply.
+The plot displays smoothed and filtered probabilities for two regimes of electricity generation data over approximately 300 time periods. For Regime 1, the smoothed probabilities (gray) and filtered probabilities (red) fluctuate around 0.5 to 0.6, with occasional peaks and dips, indicating a moderate likelihood of this regime being active throughout the series. Regime 2 shows smoothed and filtered probabilities generally ranging from 0.4 to 0.5, with similar variability, suggesting it is the complementary state to Regime 1. The alternating dominance of these probabilities over time implies a dynamic switching between the two regimes, reflecting changes in generation patterns or underlying data characteristics, with no single regime consistently dominating the entire period.
 
 ![Regime 2 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_2.png?raw=true)
 
-The second regime captures periods of elevated volatility or structural change in generation patterns. These periods often correspond to economic disruptions, extreme weather events, or major policy changes affecting the energy sector.
+The plot displays smoothed and filtered probabilities for two regimes of electricity generation data over approximately 300 time periods. For Regime 1, the smoothed probabilities (gray) and filtered probabilities (red) fluctuate around 0.5 to 0.6, with occasional peaks and dips, indicating a moderate likelihood of this regime being active throughout the series. Regime 2 shows smoothed and filtered probabilities generally ranging from 0.4 to 0.5, with similar variability, suggesting it is the complementary state to Regime 1. The alternating dominance of these probabilities over time implies a dynamic switching between the two regimes, reflecting changes in generation patterns or underlying data characteristics, with no single regime consistently dominating the entire period.
 
 ### Spectral Analysis
 
@@ -86,7 +91,7 @@ Frequency domain analysis provides additional insights into cyclical patterns in
 
 ![Periodogram](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/periodogram.png?raw=true)
 
-The periodogram reveals the dominant frequencies in the electricity generation time series. The analysis confirms strong annual cycles (12-month periods) and identifies other significant frequency components. This spectral analysis supports the seasonal modeling approach and helps validate the decomposition results.
+The periodogram for all fuels generation displays the spectral density (spectrum) of the time series across a frequency range from 0 to 6, with a bandwidth of 0.0115. The plot shows several peaks in spectral power, with the most prominent occurring around frequencies 1 to 2, where the spectrum reaches values exceeding 100,000,000. This indicates strong periodic components in the data, likely corresponding to seasonal or cyclical patterns in electricity generation, such as annual or semi-annual cycles. A notable peak near frequency 5.5, marked by a blue vertical line, suggests an additional high-frequency component, possibly reflecting shorter-term fluctuations (e.g., weekly or daily variations). The overall variability across the frequency spectrum highlights the presence of multiple periodic influences on the generation data.
 
 ## Multivariate Analysis
 
@@ -122,7 +127,7 @@ Machine learning models incorporate lagged variables and engineered features to 
 
 ![Random Forest Feature Importance](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Feature_engineering_rf.png?raw=true)
 
-The random forest model identifies key features that drive electricity generation patterns. Lagged values of generation, seasonal indicators, and trend components emerge as important predictors. The feature importance analysis guides the selection of variables for other machine learning models.
+The provided plot effectively illustrates the variable importance in a Random Forest model for predicting electricity generation, using both %IncMSE and IncNodePurity metrics. Both metrics consistently highlight seasonal_lag12 and lag12 as the most crucial predictors, demonstrating their significant influence on electricity generation due to strong annual seasonality. While other lagged variables (e.g., lag3, lag5) show moderate importance, temporal indicators such as month, quarter, and trend consistently exhibit the least impact on the model's predictive accuracy. This analysis underscores the dominant role of seasonal and lagged patterns in forecasting electricity generation, with less direct influence from general temporal markers.
 
 ### XGBoost Analysis
 
@@ -148,13 +153,13 @@ Prophet decomposition reveals the individual components driving the forecast: tr
 
 ## Model Performance and Comparison
 
-### Comprehensive Model Evaluation
+### Model Evaluation
 
 Multiple models were evaluated using standard time series forecasting metrics to identify the best performing approach.
 
 ![Model Performance Overview](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Model_overview.png?raw=true)
 
-The model comparison reveals that traditional time series methods, particularly ARIMA, outperform machine learning approaches for this dataset. This result highlights the importance of understanding the specific characteristics of time series data when selecting modeling approaches.
+The image presents a statistical analysis of electricity generation data through four plots. The "Electricity Generation Time Series" plot (top-left) displays a time series from 2005 to 2025, with generation values (MW/h) exhibiting volatility around a stable mean, approximated by a red trend line, suggesting no significant long-term trend but notable seasonal or random fluctuations. The "Seasonal Component" plot (top-right) quantifies the seasonal effect, showing a zero-centered periodic pattern with an amplitude of approximately ±4000 MW/h, indicating consistent seasonal variability. The "Forecast vs Actual" plot (bottom-left) compares actual generation (black) with ARIMA (blue) and ETS (red) forecasts from 2021 to 2025, revealing forecast errors as deviations between lines, with ARIMA and ETS showing differing predictive precision, potentially measurable by mean absolute error or root mean square error (RMSE). The "Model Performance (RMSE)" plot (bottom-right) provides RMSE values for six models—ARIMA, Random Forest, Prophet, XGBoost, SVR, and ETS—ranging from approximately 1000 to 2500, with ETS exhibiting the highest RMSE (indicating poorer fit) and ARIMA the lowest (suggesting better accuracy), allowing for a statistical comparison of model efficacy based on forecast error metrics. This analysis suggests that ARIMA may be the most reliable model for forecasting electricity generation, while ETS underperforms, and the consistent seasonal component implies that seasonal adjustments are crucial for accurate predictions, potentially guiding future modeling efforts or energy planning strategies.
 
 ### Forecast Comparison
 
@@ -162,7 +167,7 @@ Different models produce varying forecast patterns, reflecting their different a
 
 ![Forecast Comparison](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/forecast_comparison.png?raw=true)
 
-The forecast comparison shows how different models handle the seasonal patterns and trend extrapolation. Traditional time series models tend to produce smoother forecasts, while machine learning models can capture more complex patterns but may be less stable for long-term forecasting.
+The plot presents a statistical analysis of electricity generation (MW/h) from 2021 to 2025, comparing actual values (solid red line) with forecasts from ARIMA (green dashed), ETS (cyan dashed), and Prophet (purple dashed) models. The actual data exhibits a cyclical pattern with an amplitude of approximately 5000 MW/h, suggesting strong seasonal or periodic influences. The forecasts deviate from the actual values, with varying degrees of accuracy—ARIMA and ETS appear to capture the general trend but with noticeable errors, while Prophet shows larger discrepancies, particularly in peak and trough predictions, indicating potential model misspecification. Statistically, the RMSE or mean absolute error could quantify these deviations, with the plot suggesting that ARIMA and ETS may outperform Prophet in tracking the observed variability. This implies that ARIMA and ETS might be more suitable for short-term forecasting, while the consistent cyclical nature of the data underscores the importance of incorporating seasonal components in future models.
 
 ## Model Performance Results
 

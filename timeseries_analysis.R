@@ -34,7 +34,7 @@ set.seed(42)
 # 2. DATA LOADING AND INITIAL EXPLORATION
 # =============================================================================
 
-data_raw <- read.csv("./Net_generation_for_all_sectors.csv", stringsAsFactors = FALSE)
+data_raw <- read.csv("./data/Net_generation_for_all_sectors.csv", stringsAsFactors = FALSE)
 
 str(data_raw)
 summary(data_raw)

@@ -50,7 +50,11 @@ Understanding relationships between different energy sources is essential for co
 
 ![Correlation Matrix](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Correlation_matrix.png?raw=true)
 
+<<<<<<< HEAD
 The correlation analysis reveals complex relationships between different electricity generation sources. The heatmap indicates that Pumped Storage has a strong negative correlation (around -0.8) with Conventional Hydro, suggesting an opposing role in energy management. Natural Gas exhibits a strong positive correlation (around 0.8) with Coal, reflecting a close relationship possibly tied to market dynamics. Coal and Other Renewables show mixed correlations, with Coal aligning positively with Natural Gas and Other Renewables having moderate positive ties (e.g., ~0.6 with Petroleum Liquids), while substitution effects appear limited. Nuclear power displays moderate correlations (around 0.2 to 0.4), consistent with its stable baseload generation role.
+=======
+The correlation analysis reveals complex relationships between different electricity generation sources. The heatmap shows that Pumped Storage has strong positive correlations with several sources, indicating its role in grid balancing. Natural Gas shows moderate correlations with other sources, reflecting its flexible generation capabilities. Coal and Other Renewables display notable negative correlations with some sources, suggesting substitution effects in the energy mix. Nuclear power exhibits relatively moderate correlations, consistent with its baseload generation role. The matrix reveals the interconnected nature of the electricity generation portfolio and how different sources complement or substitute for each other.
+
 
 ### Autocorrelation Analysis
 
@@ -79,7 +83,11 @@ Regime switching models capture different market conditions and operational stat
 
 ![Regime 1 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_1.png?raw=true)
 
+<<<<<<< HEAD
 The plot displays smoothed and filtered probabilities for two regimes of electricity generation data over approximately 300 time periods. For Regime 1, the smoothed probabilities (gray) and filtered probabilities (red) fluctuate around 0.5 to 0.6, with occasional peaks and dips, indicating a moderate likelihood of this regime being active throughout the series. Regime 2 shows smoothed and filtered probabilities generally ranging from 0.4 to 0.5, with similar variability, suggesting it is the complementary state to Regime 1. The alternating dominance of these probabilities over time implies a dynamic switching between the two regimes, reflecting changes in generation patterns or underlying data characteristics, with no single regime consistently dominating the entire period.
+=======
+The first regime analysis shows the probability distribution and time series behavior during normal operational periods. The chart displays the differenced time series (ts_diff) overlaid with smooth probabilities, where the gray shaded areas indicate periods when Regime 1 is active. The bottom panel shows the regime probabilities as vertical bars. This regime appears to dominate most of the time series, representing periods of stable electricity generation patterns with typical seasonal variations and manageable volatility levels.
+
 
 ![Regime 2 Probabilities](https://github.com/farukhasan/time-series-analysis/blob/main/visualizations/Regime_2.png?raw=true)
 

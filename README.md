@@ -1,4 +1,4 @@
-# Comprehensive Time Series Analysis of Electricity Generation Data
+# Time Series Analysis of Electricity Generation Data
 
 ## Project Overview
 
